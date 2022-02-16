@@ -24,10 +24,11 @@ import random
 
 ## Set random seem for reproducibility
 #manualSeed = 1
-##manualSeed = random.randint(1, 10000) # use if you want new results
-#print("Random Seed: ", manualSeed)
-#random.seed(manualSeed)
-#torch.manual_seed(manualSeed)
+#manualSeed = random.randint(1, 10000) # use if you want new results
+manualSeed = 123 
+print("Random Seed: ", manualSeed)
+random.seed(manualSeed)
+torch.manual_seed(manualSeed)
 #%%
 
 # Save model
@@ -89,8 +90,7 @@ def load_network():
     print ("#####      Build Network      #####")
     print ('###################################')
 
-    # netG = network.Res_Generator(ngf=64, nz=(2048+50))
-    netG = network.Res_Generator(ngf=64, nz=(2048+51))
+    netG = network.Res_Generator(ngf=64, nz=(2048+50))
 
     netD = network.DC_Discriminator(ndf=64)
     

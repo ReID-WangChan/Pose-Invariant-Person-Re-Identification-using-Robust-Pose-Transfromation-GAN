@@ -81,7 +81,8 @@ def val_loader(path):
 
 def pose_loader(path):
     # pose = np.reshape(np.load(path),(1,1,50))
-    pose = np.reshape(np.load(path),(50,))
+    # ! Choose only the first person 
+    pose = np.reshape(np.load(path)[0],(50,))
     # pose = np.reshape(np.load(path),(51,))
 #    pose = transforms.ToPILImage()(pose)
 #    print(pose)
