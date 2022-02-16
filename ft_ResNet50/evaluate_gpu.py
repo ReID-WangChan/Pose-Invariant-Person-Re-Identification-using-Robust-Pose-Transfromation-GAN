@@ -57,7 +57,7 @@ multi_query = False
 batchsize = 8
 PCB = False
     
-data_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\pytorch'
+data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
 
 if multi_query:
     image_datasets = {x: datasets.ImageFolder( os.path.join(data_dir,x) ,data_transforms) for x in ['gallery','query','multi-query']}

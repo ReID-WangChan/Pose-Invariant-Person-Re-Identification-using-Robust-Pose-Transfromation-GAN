@@ -28,7 +28,8 @@ def print_networks(model_names, debug):
         print ('-----------------------------------------------------')
 
 
-netG = network.Res_Generator(ngf=64, nz=(2048+50))
+# netG = network.Res_Generator(ngf=64, nz=(2048+50))
+netG = network.Res_Generator(ngf=64, nz=(2048+51))
 
 netD = network.DC_Discriminator(ndf=64)
 

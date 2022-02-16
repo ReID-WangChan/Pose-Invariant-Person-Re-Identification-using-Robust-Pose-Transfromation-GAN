@@ -279,8 +279,6 @@ class Ensemble(nn.Module):
     def forward(self, x1, x2):
         x1 = self.ResNet50(x1)
         fea2 = x2.view(x2.size(0), -1)
-#        print(x1.size())
-#        print(fea2.size())
         x = torch.cat((x1, fea2), dim=1)
         x = x[:,:,None,None]
 #        print(x.size())

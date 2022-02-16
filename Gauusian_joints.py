@@ -54,10 +54,10 @@ n_models = len(mix_models)
 
 
 #%%
-#sample_1 = np.load('C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all\\0002_c1s1_000551_01.npy')
+#sample_1 = np.load('my_model/pose_train/all/0002_c1s1_000551_01.npy')
 #print(sample_1.shape)
 
-dataset_folder = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all'
+dataset_folder = 'my_model/pose_train/all'
 pose_list = []
 joint_dict = {'0':[], '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[],
               '14':[], '15':[], '16':[], '17':[], '18':[], '19':[], '20':[], '21':[], '22':[], '23':[], '24':[]}

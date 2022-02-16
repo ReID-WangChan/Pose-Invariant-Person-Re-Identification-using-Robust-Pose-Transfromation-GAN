@@ -34,7 +34,8 @@ def load_network():
     print ("#####      Build Network      #####")
     print ('###################################')
 
-    netG = network_1.Res_Generator(ngf=64, nz=(2048+50))
+    # netG = network_1.Res_Generator(ngf=64, nz=(2048+50))
+    netG = network_1.Res_Generator(ngf=64, nz=(2048+51))
 
     netD = network_1.DC_Discriminator(ndf=64)
     
@@ -106,7 +107,7 @@ if __name__ == '__main__':
     resnet = netE.ResNet50
     print(resnet)
     
-    sample_path = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\bounding_box_test\\0000_c1s1_000151_01.jpg'
+    sample_path = 'Datasets/Market-1501-v15.09.15/bounding_box_test/0000_c1s1_000151_01.jpg'
     sample_input = Image.open(sample_path).convert('RGB')
     
     data_transforms = transforms.Compose([
@@ -132,7 +133,7 @@ if __name__ == '__main__':
     batchsize = 8
     PCB = False
         
-    data_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\pytorch'
+    data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
 
     if multi_query:
         image_datasets = {x: datasets.ImageFolder( os.path.join(data_dir,x) ,data_transforms) for x in ['gallery','query','multi-query']}

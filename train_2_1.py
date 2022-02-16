@@ -89,7 +89,8 @@ def load_network():
     print ("#####      Build Network      #####")
     print ('###################################')
 
-    netG = network.Res_Generator(ngf=64, nz=(2048+50))
+    # netG = network.Res_Generator(ngf=64, nz=(2048+50))
+    netG = network.Res_Generator(ngf=64, nz=(2048+51))
 
     netD = network.DC_Discriminator(ndf=64)
     
@@ -162,8 +163,9 @@ if __name__ == '__main__':
                                            transform=dataset.train_transform(), img_loader=dataset.val_loader, pose_loader=dataset.pose_loader)
     
     train_loader = Data.DataLoader(train_data, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True, num_workers=cfg.TRAIN.NUM_WORKERS, drop_last=True)
+    
 
-    val_data = dataset.Market_DataLoader(imgs_path=cfg.TRAIN.imgs_path, pose_path=cfg.TRAIN.pose_path, idx_path=cfg.TEST.idx_path,
+    val_data = dataset.Market_DataLoader(imgs_path=cfg.TEST.imgs_path, pose_path=cfg.TEST.pose_path, idx_path=cfg.TEST.idx_path,
                                          transform=dataset.val_transform(), img_loader=dataset.val_loader, pose_loader=dataset.pose_loader)
     
     val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False,
@@ -222,6 +224,9 @@ if __name__ == '__main__':
             # #######################################################
             # (2) Generate images
             # #######################################################
+            # print(f'src_img = {src_img.shape}')
+            # print(f'pose = {pose.shape}')
+            # exit()
             fake_img = netG(src_img, pose)
 #            print(src_img.size())
 #            print(fake_img.size())

@@ -47,17 +47,22 @@ def plot_pose(pose_vector):
 #    fig.savefig(os.path.join(save_dir, name[:-3]+'png'), cmap='gray')
     plt.show()
 
-gmm = GaussianMixture(n_components=25, covariance_type='full')
+gmm = GaussianMixture(n_components=12, covariance_type='full')
 
 
 #%%
-dataset_folder = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all'
+dataset_folder = 'Datasets/Market-1501-v15.09.15/openpose_train'
 pose_list = []
 
 for pose in os.listdir(dataset_folder):
     pose_vec = np.load(os.path.join(dataset_folder, pose))
-    pose_list.append(pose_vec)
+    # ! choose only the first person in the pose vector
+    pose_list.append(pose_vec[0])
+
+pose_list = np.asarray(pose_list).reshape(-1, 50)
+print(pose_list.shape)
     
 gmm.fit(pose_list)
-for i in range(25):
-    plot_pose(gmm.means_[i])
+for i in range(12):
+    # plot_pose(gmm.means_[i])
+    np.save(f'Datasets/Market-1501-v15.09.15/12_gmm_pose/pose_{i}.npy', gmm.means_[i])

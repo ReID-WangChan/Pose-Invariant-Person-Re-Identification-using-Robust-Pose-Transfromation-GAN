@@ -25,8 +25,7 @@ def save_images(name, PATH, fake_img):
 def load_data(samples):
     val_data = dataset.Market_test(imgs_name=samples, imgs_path=cfg.TEST.imgs_path, pose_path='results_gan/sample_8_poses',
                                          transform=dataset.val_transform(), loader=dataset.val_loader)
-    val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False,
-                                 num_workers=cfg.TEST.BATCH_SIZE)
+    val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False, num_workers=cfg.TEST.BATCH_SIZE)
 
     val = [val_data, val_loader]
     return val

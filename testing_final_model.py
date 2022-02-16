@@ -56,7 +56,7 @@ opt = parser.parse_args()
 
 fp16 = opt.fp16
 #data_dir = opt.data_dir
-data_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\pytorch'
+data_dir = 'Datasets/Market-1501-v15.09.15/'
 name = opt.name
 str_ids = opt.gpu_ids.split(',')
 gpu_ids = []
@@ -127,7 +127,7 @@ netG.eval()
 
 
 model_1 = model.ft_net(len(class_names)+1, opt.droprate, opt.stride)
-model_1.load_state_dict(torch.load('ft_ResNet50/net_last_resnet.pth'))
+# model_1.load_state_dict(torch.load('ft_ResNet50/net_last_resnet.pth'))
 
 temp = nn.Sequential(*list(model_1.children())[:-1])
 res50_conv = nn.Sequential(*list(temp[0].children())[:-1])
@@ -158,7 +158,7 @@ class FusionNet(nn.Module):
         return x_f, x_c
 
 fusionnet = FusionNet(len(class_names)+1)
-fusionnet.load_state_dict(torch.load('C:\\Users\\VR LAB PC3\\Desktop\\Y\\github_models\\pngan-fork\\PN_GAN\\script\\GAN\\model\\newGAN\\net_last.pth'))
+fusionnet.load_state_dict(torch.load('../PN_GAN/script/GAN/model/newGAN/net_last.pth'))
 #fusionnet = nn.Sequential(*list(fusionnet.children())[:-1])
 fusionnet = fusionnet.cuda()
 
@@ -225,7 +225,7 @@ gallery_cam,gallery_label = get_id(gallery_path)
 query_cam,query_label = get_id(query_path)
 
 #%%
-pose_path = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\github_models\\pngan-fork\\PN_GAN\\script\\GAN\\cannonical_poses'
+pose_path = '../PN_GAN/script/GAN/cannonical_poses'
 poses = os.listdir(pose_path)
 
 with torch.no_grad():
@@ -277,7 +277,7 @@ with torch.no_grad():
         
 #%%
 #import glob
-search_dir_query = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\github_models\\pngan-fork\\PN_GAN\\script\\GAN\\features\\query'
+search_dir_query = '../PN_GAN/script/GAN/features/query'
 os.chdir(search_dir_query)
 files_query = filter(os.path.isfile, os.listdir(search_dir_query))
 files_query = [os.path.join(search_dir_query, f) for f in files_query] # add path to each file
@@ -288,7 +288,7 @@ query_feature = torch.FloatTensor()
 for item in files_query:
     query_feature = torch.cat((query_feature, torch.load(item)),0)
 
-search_dir_gallery = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\github_models\\pngan-fork\\PN_GAN\\script\\GAN\\features\\gallery'
+search_dir_gallery = '../PN_GAN/script/GAN/features/gallery'
 os.chdir(search_dir_gallery)
 files_gallery = filter(os.path.isfile, os.listdir(search_dir_gallery))
 files_gallery = [os.path.join(search_dir_gallery, f) for f in files_gallery] # add path to each file

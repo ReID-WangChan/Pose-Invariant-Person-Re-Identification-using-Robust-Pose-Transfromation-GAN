@@ -54,7 +54,7 @@ opt = parser.parse_args()
 
 fp16 = opt.fp16
 #data_dir = opt.data_dir
-data_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\pytorch'
+data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
 name = opt.name
 str_ids = opt.gpu_ids.split(',')
 gpu_ids = []

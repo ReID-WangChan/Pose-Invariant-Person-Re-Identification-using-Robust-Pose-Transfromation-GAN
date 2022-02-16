@@ -36,7 +36,7 @@ def read_file(path):
     return torch.tensor(np.load(path)/128.0)
 
 train_loader = torch.utils.data.DataLoader(
-    datasets.DatasetFolder('C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train',
+    datasets.DatasetFolder('my_model/pose_train',
                             loader=read_file, extensions=['npy'], transform=None),
     batch_size=batch_size, shuffle=True)
 
@@ -120,7 +120,7 @@ def plot_pose(pose_vector):
 
 
 with torch.no_grad():    
-    sample_1 = np.load('C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all\\0002_c1s1_000551_01.npy')
+    sample_1 = np.load('my_model/pose_train/all/0002_c1s1_000551_01.npy')
     print(sample_1.shape)
     plot_pose(sample_1)
     

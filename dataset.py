@@ -80,7 +80,9 @@ def val_loader(path):
     return img
 
 def pose_loader(path):
-    pose = np.reshape(np.load(path),(1,1,50))
+    # pose = np.reshape(np.load(path),(1,1,50))
+    pose = np.reshape(np.load(path),(50,))
+    # pose = np.reshape(np.load(path),(51,))
 #    pose = transforms.ToPILImage()(pose)
 #    print(pose)
     return pose
@@ -98,9 +100,11 @@ class Market_DataLoader():
                 
         # images
         images = os.listdir(imgs_path)
+        # print(images)
         poses = os.listdir(pose_path)
         images = [im for im in images if int(im.split('_')[0]) in idx and im[:-3]+'npy' in poses]
 
+        # print(idx)
         # pairs
         data = []
         for i in idx:   # i being the class
@@ -129,10 +133,14 @@ class Market_DataLoader():
         pose_transform = transforms.Compose([
 #                transforms.ToPILImage(),
                 transforms.ToTensor(),
+                transforms.ConvertImageDtype(torch.float),
                 transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
                 ])
 
-        src_img, tgt_img, pose = self.transform(src_img), self.transform(tgt_img), pose_transform(pose)
+        src_img = self.transform(src_img)
+        tgt_img = self.transform(tgt_img)
+        # pose = pose_transform(pose)
+        # src_img, tgt_img, pose = self.transform(src_img), self.transform(tgt_img), pose
     
         
 #        print(pose)
@@ -172,11 +180,12 @@ class Market_test():
         pose_transform = transforms.Compose([
 #                transforms.ToPILImage(),
                 transforms.ToTensor(),
+                transforms.ConvertImageDtype(torch.float),
                 transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
                 ])
 
         src_img = self.transform(src_img)
-        pose = pose_transform(pose)
+        # pose = pose_transform(pose)
 
         return src_img, pose, name
 

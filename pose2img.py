@@ -45,7 +45,7 @@ def plot_pose(pose_vector, name):
     fig.savefig(os.path.join(save_dir, name[:-3]+'png'), cmap='gray')
     plt.close(fig)
 #    plt.show()
-pose_vec_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all'
+pose_vec_dir = 'my_model/pose_train/all'
 for pose in os.listdir(pose_vec_dir):
     sample_1 = np.load(os.path.join(pose_vec_dir, pose))
     #print(sample_1.shape)

@@ -53,7 +53,7 @@ mix_models = dict((joints, GaussianMixture(n_components=3, covariance_type='full
 n_models = len(mix_models)
 
 
-dataset_folder = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\my_model\\pose_train\\all'
+dataset_folder = 'Datasets/Market-1501-v15.09.15/new_pose_train/all'
 pose_list = []
 joint_dict = {'0':[], '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[],
               '14':[], '15':[], '16':[], '17':[], '18':[], '19':[], '20':[], '21':[], '22':[], '23':[], '24':[]}
@@ -86,6 +86,7 @@ for pose in mean_poses:
 #%% sampling work
 input_pose = '0896_c1s4_049756_02.npy'
 pose_vec = np.load(os.path.join(dataset_folder, input_pose))
+print(f'pose_vec = {pose_vec}')
 fig = plt.figure()
 plot_pose(pose_vec, 'original_pose_'+input_pose[:-4])
 

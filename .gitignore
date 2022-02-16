@@ -1,0 +1,9 @@
+Datasets/
+__pycache__/
+log/
+log_GAN_ep2.txt
+fix.ipynb
+results/
+duke_poses.zip
+market_poses.zip
+*/__pycache__/

@@ -60,7 +60,7 @@ opt = parser.parse_args()
 
 fp16 = opt.fp16
 #data_dir = opt.data_dir
-data_dir = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\Datasets\\Market-1501-v15.09.15\\pytorch'
+data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
 name = opt.name
 str_ids = opt.gpu_ids.split(',')
 gpu_ids = []
@@ -237,7 +237,7 @@ train_transform = transforms.Compose([
 #def train_model(model, criterion, optimizer, scheduler, num_epochs, train_transform):
 #model = net
 since = time.time()
-pose_path = 'C:\\Users\\VR LAB PC3\\Desktop\\Y\\github_models\\pngan-fork\\PN_GAN\\script\\GAN\\cannonical_poses'
+pose_path = '../PN_GAN/script/GAN/cannonical_poses'
 poses = os.listdir(pose_path)
 
 x_epoch = []
