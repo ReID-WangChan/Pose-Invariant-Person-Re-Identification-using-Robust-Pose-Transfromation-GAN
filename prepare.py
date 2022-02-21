@@ -4,7 +4,8 @@ from tkinter.tix import Tree
 from tqdm import tqdm 
 
 # You only need to change this line to your dataset download path
-download_path = 'Datasets/Market-1501-v15.09.15'
+# download_path = 'Datasets/Market-1501-v15.09.15'
+download_path = 'Datasets/DukeMTMC-reID'
 
 if not os.path.isdir(download_path):
     print('please change the download_path')
@@ -30,7 +31,10 @@ for root, dirs, files in tqdm(os.walk(query_path, topdown=True)):
 
 #-----------------------------------------
 #multi-query
-query_path = download_path + '/gt_bbox'
+if download_path == 'Datasets/Market-1501-v15.09.15': 
+    query_path = download_path + '/gt_bbox'
+else: 
+    query_path = download_path + '/query'
 # for dukemtmc-reid, we do not need multi-query
 query_save_path = download_path + '/pytorch/multi-query'
 os.makedirs(query_save_path, exist_ok=True)

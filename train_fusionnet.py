@@ -310,6 +310,7 @@ for epoch in range(num_epochs):
 #                print('input_i shape:', input_i.shape)
                 fake_img = []
                 for pose in poses:
+                    # ! skip pose_transform
                     pose_img = Image.open(os.path.join(pose_path, pose)).convert('RGB')
                     pose = Variable(train_transform(pose_img).cuda().detach())
                     pose = pose[None,:,:,:]

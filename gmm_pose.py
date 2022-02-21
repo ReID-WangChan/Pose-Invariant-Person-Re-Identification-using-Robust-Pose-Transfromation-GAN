@@ -51,7 +51,8 @@ gmm = GaussianMixture(n_components=12, covariance_type='full')
 
 
 #%%
-dataset_folder = 'Datasets/Market-1501-v15.09.15/openpose_train'
+# dataset_folder = 'Datasets/Market-1501-v15.09.15/openpose_train'
+dataset_folder = 'Datasets/DukeMTMC-reID/openpose_train'
 pose_list = []
 
 for pose in os.listdir(dataset_folder):
@@ -64,5 +65,7 @@ print(pose_list.shape)
     
 gmm.fit(pose_list)
 for i in range(12):
-    # plot_pose(gmm.means_[i])
-    np.save(f'Datasets/Market-1501-v15.09.15/12_gmm_pose/pose_{i}.npy', gmm.means_[i])
+    plot_pose(gmm.means_[i])
+    # np.save(f'Datasets/Market-1501-v15.09.15/12_gmm_pose/pose_{i}.npy', gmm.means_[i])
+    os.makedirs(f'Datasets/DukeMTMC-reID/12_gmm_pose', exist_ok=True)
+    np.save(f'Datasets/DukeMTMC-reID/12_gmm_pose/pose_{i}.npy', gmm.means_[i])

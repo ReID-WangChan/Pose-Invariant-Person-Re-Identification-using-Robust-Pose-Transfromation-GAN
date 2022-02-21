@@ -95,22 +95,39 @@ class Market_DataLoader():
         lines = open(idx_path, 'r').readlines()
         idx = [int(line.split()[0]) for line in lines]
         
-        classes = idx
-        classes.sort()
-        class_to_idx = {classes[i]: i for i in range(len(classes))}
+        # classes = idx
+        # classes.sort()
+        # class_to_idx = {classes[i]: i for i in range(len(classes))}
+        # print(f'class_to_idx1 = {len(class_to_idx)}')
                 
         # images
         images = os.listdir(imgs_path)
         # print(images)
         poses = os.listdir(pose_path)
-        images = [im for im in images if int(im.split('_')[0]) in idx and im[:-3]+'npy' in poses]
+        images = [im for im in images if im[:-3]+'npy' in poses]
+        print(f'images: {len(images)}')
 
+        # without train_idx.txt
+        class_to_idx = dict()
+        counter = 0 
+        for image_path in sorted(images): 
+            pid = int(image_path.split('_')[0])
+            if pid not in class_to_idx.keys(): 
+                class_to_idx[pid] = counter 
+                counter += 1 
+        print(f'class_to_idx2 = {len(class_to_idx)}')
+        idx = sorted(list(set(class_to_idx.values())))
         # print(idx)
         # pairs
         data = []
+        print(f'idx len = {len(idx)}')
         for i in idx:   # i being the class
             tmp = [j for j in images if int(j.split('_')[0]) == i]
             data += list(P(tmp, 2))
+            # print(f'tmp = {len(tmp)}')
+            # print(f'p 2  = {len(list(P(tmp, 2)))}')
+            # print(f'-' * 50)
+        print('end pairs')
 
         random.shuffle(data)
         # self.data = data[0:5000*cfg.TRAIN.BATCH_SIZE]

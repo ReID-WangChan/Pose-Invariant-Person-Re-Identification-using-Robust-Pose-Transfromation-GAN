@@ -53,12 +53,12 @@ def save_images(net_name, epoch, PATH, src_img, pose, tgt_img, fake_img, summary
 # Load Data
 def load_data():
     train_data = dataset.Market_DataLoader(imgs_path=cfg.TRAIN.imgs_path, pose_path=cfg.TRAIN.pose_path, idx_path=cfg.TRAIN.idx_path,
-                                           transform=dataset.train_transform(), loader=dataset.val_loader)
+                                           transform=dataset.train_transform(), img_loader=dataset.val_loader, pose_loader=dataset.pose_loader)
     train_loader = Data.DataLoader(train_data, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True,
                                    num_workers=cfg.TRAIN.NUM_WORKERS, drop_last=True)
 
     val_data = dataset.Market_DataLoader(imgs_path=cfg.TRAIN.imgs_path, pose_path=cfg.TRAIN.pose_path, idx_path=cfg.TEST.idx_path,
-                                         transform=dataset.val_transform(), loader=dataset.val_loader)
+                                         transform=dataset.val_transform(), img_loader=dataset.val_loader, pose_loader=dataset.pose_loader)
     val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False,
                                  num_workers=cfg.TRAIN.NUM_WORKERS)
 

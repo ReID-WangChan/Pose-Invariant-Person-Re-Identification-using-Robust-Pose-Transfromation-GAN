@@ -7,3 +7,6 @@ results/
 duke_poses.zip
 market_poses.zip
 */__pycache__/
+ft_ResNet50/model/
+ft_ResNet50/model_market/
+*/*/__pycache__/

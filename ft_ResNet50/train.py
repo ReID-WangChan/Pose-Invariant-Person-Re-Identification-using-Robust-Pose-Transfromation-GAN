@@ -348,8 +348,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=40, gamma=0.1)
 # It should take around 1-2 hours on GPU. 
 #
 dir_name = os.path.join('./model',name)
-if not os.path.isdir(dir_name):
-    os.mkdir(dir_name)
+os.makedirs(dir_name, exist_ok=True)
 #record every run
 copyfile('./train.py', dir_name+'/train.py')
 copyfile('./model.py', dir_name+'/model.py')

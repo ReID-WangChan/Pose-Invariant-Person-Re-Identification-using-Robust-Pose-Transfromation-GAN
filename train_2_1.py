@@ -39,8 +39,7 @@ def save_model(epoch, path, nets, optimizers, net_name):
     print ("Saving model ------------------------------->")
 #    if not os.path.exists(os.path.join(path, net_name)):
 #        os.mkdir(os.path.join(path, net_name))
-    if not os.path.exists(path + '/' + net_name):
-        os.mkdir(path + '/' + net_name)
+    os.makedirs(path + '/' + net_name, exist_ok=True)
     torch.save({'epoch': epoch, 'state_dict': netG.state_dict(), 'optimizer' : optimizer_G.state_dict(), },
                 f='%s/%s/%s_%d.pkl' % (path, net_name, 'G', epoch))
     torch.save({'epoch': epoch, 'state_dict': netD.state_dict(), 'optimizer' : optimizer_D.state_dict(), },
@@ -70,12 +69,12 @@ def save_images(net_name, epoch, PATH, src_img, pose, tgt_img, fake_img, summary
 # Load Data
 def load_data():
     train_data = dataset.Market_DataLoader(imgs_path=cfg.TRAIN.imgs_path, pose_path=cfg.TRAIN.pose_path, idx_path=cfg.TRAIN.idx_path,
-                                           transform=dataset.train_transform(), loader=dataset.val_loader)
+                                           transform=dataset.train_transform(), loader=dataset.val_loader, mode='train')
     train_loader = Data.DataLoader(train_data, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True,
                                    num_workers=cfg.TRAIN.NUM_WORKERS, drop_last=True)
 
     val_data = dataset.Market_DataLoader(imgs_path=cfg.TRAIN.imgs_path, pose_path=cfg.TRAIN.pose_path, idx_path=cfg.TEST.idx_path,
-                                         transform=dataset.val_transform(), loader=dataset.val_loader)
+                                         transform=dataset.val_transform(), loader=dataset.val_loader, mode='test')
     val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False,
                                  num_workers=cfg.TRAIN.NUM_WORKERS)
 
@@ -164,17 +163,21 @@ if __name__ == '__main__':
     
     train_loader = Data.DataLoader(train_data, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True, num_workers=cfg.TRAIN.NUM_WORKERS, drop_last=True)
     
+    print(f'torch.cuda.is_available() = {torch.cuda.is_available()}')
 
     val_data = dataset.Market_DataLoader(imgs_path=cfg.TEST.imgs_path, pose_path=cfg.TEST.pose_path, idx_path=cfg.TEST.idx_path,
                                          transform=dataset.val_transform(), img_loader=dataset.val_loader, pose_loader=dataset.pose_loader)
     
+    print('after val_data')
     val_loader = Data.DataLoader(val_data, batch_size=cfg.TEST.BATCH_SIZE, shuffle=False,
                                  num_workers=cfg.TRAIN.NUM_WORKERS)
+
+    print(f'after val_loader')
 
     train_file = [train_data, train_loader]
     val_file = [val_data, val_loader]
     
-    
+    print(f'start load_network')
 #    train_file, val_file = load_data()
     nets = load_network()
     optimizers, schedulers, summary = Optimizer(nets)
@@ -289,8 +292,7 @@ if __name__ == '__main__':
         netG.eval()
         PATH = os.path.join(cfg.FILE_PATH, 'images')
         
-        if not os.path.exists(PATH):
-            os.mkdir(PATH)
+        os.makedirs(PATH, exist_ok=True)
         
         for _, (src_img, tgt_img, pose, label) in enumerate(val_loader):
             src_img = Variable(src_img, volatile=True).cuda()
