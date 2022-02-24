@@ -14,7 +14,7 @@ cfg = __C
 # Other options
 __C.NET = 'GAN'
 __C.GPU_ID = '0'
-__C.NUM_CLASS = 751
+__C.NUM_CLASS = 751 
 __C.DEBUG = False
 __C.FILE_PATH = './'   # working directory
 

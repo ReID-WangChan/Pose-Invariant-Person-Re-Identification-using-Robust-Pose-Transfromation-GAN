@@ -16,7 +16,7 @@ import torch
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.autograd import Variable
-import torch.backends.cudnn as cudnn
+from torch.backends import cudnn
 import numpy as np
 #import torchvision
 from torchvision import datasets, transforms
@@ -60,7 +60,9 @@ opt = parser.parse_args()
 
 fp16 = opt.fp16
 #data_dir = opt.data_dir
-data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
+# data_dir = 'Datasets/Market-1501-v15.09.15/pytorch'
+data_dir = 'Datasets/DukeMTMC-reID/pytorch'
+
 name = opt.name
 str_ids = opt.gpu_ids.split(',')
 gpu_ids = []
@@ -135,6 +137,7 @@ dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=opt.
               for x in ['train', 'val']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
+print(f'class_names: {len(class_names)}')
 
 use_gpu = torch.cuda.is_available()
 
@@ -172,10 +175,23 @@ def load_network(model_path):
     print ('###################################')
 
     nets = []
-    netG = network.Res_Generator(cfg.TRAIN.ngf, cfg.TRAIN.num_resblock)
-    netG.load_state_dict(torch.load(model_path)['state_dict'])
+    print(f'cfg.TRAIN.ngf = {cfg.TRAIN.ngf}')
+    print(f'cfg.TRAIN.num_resblock = {cfg.TRAIN.num_resblock}')
+    # ? legacy 
+    # ?? not sure 
+    # netG = network.Res_Generator(cfg.TRAIN.ngf, cfg.TRAIN.num_resblock)
+    # * adjust to try 
+    netG = network.Res_Generator(cfg.TRAIN.ngf, nz=(2048+50))
+    # ! hack
+    # netG.load_state_dict(torch.load(model_path)['state_dict'])
 
-    nets.append(netG)
+    # ? legacy
+    # nets.append(netG)
+    # * ensemble to generate pose image
+    netRN = network.ResNet50()
+    netE = network.Ensemble(netRN, netG)
+    nets.append(netE)
+
     for net in nets:
         net.cuda()
 
@@ -192,7 +208,7 @@ netG.eval()
 
 
 model_1 = model.ft_net(len(class_names), opt.droprate, opt.stride)
-model_1.load_state_dict(torch.load('ft_ResNet50/net_last_resnet.pth'))
+model_1.load_state_dict(torch.load('ft_ResNet50/model_duke/ft_ResNet50/net_last.pth'))
 
 temp = nn.Sequential(*list(model_1.children())[:-1])
 res50_conv = nn.Sequential(*list(temp[0].children())[:-1])
@@ -206,14 +222,21 @@ res50_conv.eval()
 class FusionNet(nn.Module):
     def __init__(self, num_classes):
         super(FusionNet, self).__init__()
-        self.fc1 = nn.Linear(2048*9, 2048*4)
+        # ? legacy: the number of pose-generated images + original one 
+        # n = 9  
+        # * use 13 instead 
+        self.n = 13
+
+        self.fc1 = nn.Linear(2048*self.n, 2048*4)
         self.fc2 = nn.Linear(2048*4, 2048)
         self.fc3 = nn.Linear(2048, 2048)
         self.fc4 = nn.Linear(2048, num_classes)
 
     def forward(self, x_q, x_gen):
+        # print(f'x_q shape: {x_q.shape}')
+        # print(f'x_gen shape: {x_gen.shape}')
         x = torch.cat((x_q, x_gen), dim=1)
-        x = x.view(-1, 2048*9)
+        x = x.view(-1, 2048*self.n)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x_q = x_q.view(-1, 2048)
@@ -237,7 +260,9 @@ train_transform = transforms.Compose([
 #def train_model(model, criterion, optimizer, scheduler, num_epochs, train_transform):
 #model = net
 since = time.time()
-pose_path = '../PN_GAN/script/GAN/cannonical_poses'
+# pose_path = '../PN_GAN/script/GAN/cannonical_poses'
+# pose_path = 'Datasets/DukeMTMC-reID/openpose_test'
+pose_path = 'Datasets/DukeMTMC-reID/12_gmm_pose'
 poses = os.listdir(pose_path)
 
 x_epoch = []
@@ -253,6 +278,7 @@ def draw_curve(current_epoch):
     if current_epoch == 0:
         ax0.legend()
         ax1.legend()
+    os.makedirs(os.path.join('./model',name), exist_ok=True)
     fig.savefig( os.path.join('./model',name,'train.jpg'))
 
 ######################################################################
@@ -304,27 +330,39 @@ for epoch in range(num_epochs):
                 inputs = inputs.half()
                 
             #% assume fusionnet and gan is imported
+            # print('start fusionnet')
             inputs_vec = []
             for input_i in inputs:
                 input_i = input_i[None,:,:,:]
 #                print('input_i shape:', input_i.shape)
                 fake_img = []
                 for pose in poses:
+                    # ? legacy
                     # ! skip pose_transform
-                    pose_img = Image.open(os.path.join(pose_path, pose)).convert('RGB')
-                    pose = Variable(train_transform(pose_img).cuda().detach())
-                    pose = pose[None,:,:,:]
+                    # pose_img = Image.open(os.path.join(pose_path, pose)).convert('RGB')
+                    # pose = Variable(train_transform(pose_img).cuda().detach())
+                    # pose = pose[None,:,:,:]
+
+                    # * for loading from openpose_test
+                    # pose = torch.tensor(np.reshape(np.load(os.path.join(pose_path, pose))[0], (1,50))).cuda()
+                    # * for loading from 12_gmm_pose 
+                    pose = torch.tensor(np.reshape(np.load(os.path.join(pose_path, pose)), (1,50))).cuda()
+
 #                    print('pose dim:', pose.shape)
-                    fake_img.append(netG(input_i, pose)[-1,:,:,:])
-                fake_img_tensor = Variable(torch.stack(fake_img).cuda().detach())
+                    # print(f'input_i shape = {input_i.shape}, pose shape = {pose.shape}')
+                    # fake_img.append(netG(input_i, pose)[-1,:,:,:])
+                    fake_img.append(netG(input_i, pose))
+                fake_img_tensor = Variable(torch.cat(fake_img, dim=0).cuda().detach())
                 inputs_vec.append(res50_conv(fake_img_tensor).view(-1))
 #            print(inputs_vec.shape)
             input_train = Variable(torch.stack(inputs_vec).cuda().detach())
             inputs = res50_conv(inputs)
             # zero the parameter gradients
             optimizer.zero_grad()
+            # print('end fusionnet')
 
-            # forward
+
+            # forwardx
             if phase == 'val':
                 with torch.no_grad():
                     outputs = net(inputs, input_train[:,:,None,None])
