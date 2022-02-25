@@ -182,8 +182,20 @@ def load_network(model_path):
     # netG = network.Res_Generator(cfg.TRAIN.ngf, cfg.TRAIN.num_resblock)
     # * adjust to try 
     netG = network.Res_Generator(cfg.TRAIN.ngf, nz=(2048+50))
+    netG_names = [name for name, param in netG.named_parameters()] 
+    print(f'netG_names = {len(netG_names)}')
+
+    new_state_dict = dict()
+    for name, param in torch.load(model_path)['state_dict'].items(): 
+        if name.startswith('Generator'): 
+            name = name[name.find('.')+1:] 
+            if name in netG_names or name.endswith('running_mean') or name.endswith('running_var'): 
+                new_state_dict[name] = param 
+            else: 
+                print(f'Not found -> {name}')
+
     # ! hack
-    # netG.load_state_dict(torch.load(model_path)['state_dict'])
+    netG.load_state_dict(new_state_dict)
 
     # ? legacy
     # nets.append(netG)
@@ -198,8 +210,9 @@ def load_network(model_path):
     print ('Finished !')
     return nets
 
-
-model_path = 'model/GAN/G_16.pkl'
+# ? legacy 
+# model_path = 'model/GAN/G_16.pkl'
+model_path = 'model/GAN/G_19.pkl'
 nets = load_network(model_path)
 netG = nets[0]
 for param in netG.parameters():

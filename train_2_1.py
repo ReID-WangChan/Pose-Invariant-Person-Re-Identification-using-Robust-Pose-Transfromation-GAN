@@ -90,6 +90,9 @@ def load_network():
     print ('###################################')
 
     netG = network.Res_Generator(ngf=64, nz=(2048+50))
+    # for name, param in netG.named_parameters():
+    #     print(f'{name} -> {param.size()}')
+    # exit()
 
     netD = network.DC_Discriminator(ndf=64)
     
