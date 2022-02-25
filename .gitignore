@@ -10,3 +10,5 @@ market_poses.zip
 ft_ResNet50/model/
 ft_ResNet50/model_market/
 */*/__pycache__/
+model/
+images/
