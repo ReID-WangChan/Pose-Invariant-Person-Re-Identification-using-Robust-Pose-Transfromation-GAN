@@ -227,8 +227,8 @@ if __name__ == '__main__':
             # #######################################################
             # (2) Generate images
             # #######################################################
-            # print(f'src_img = {src_img.shape}')
-            # print(f'pose = {pose.shape}')
+            print(f'src_img = {src_img.shape}')
+            print(f'pose = {pose.shape}')
             # exit()
             fake_img = netG(src_img, pose)
 #            print(src_img.size())

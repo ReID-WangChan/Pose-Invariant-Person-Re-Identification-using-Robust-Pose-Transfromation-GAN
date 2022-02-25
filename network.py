@@ -142,6 +142,7 @@ class Res_Generator(nn.Module):
         ]))
 
     def forward(self, z):
+        # print(f'before prepare(z), z shape = {z.shape}')
         x = self.prepare(z)
         x = self.interpolate(x)
 #        print('my_layer:',x.size())
@@ -277,6 +278,8 @@ class Ensemble(nn.Module):
         self.Generator = Generator
         
     def forward(self, x1, x2):
+        # print(f'x1 shape = {x1.shape}')
+        # print(f'x2 shape = {x2.shape}')
         x1 = self.ResNet50(x1)
         # print(f'x1 shape = {x1.size()}')
         fea2 = x2.view(x2.size(0), -1)

@@ -12,3 +12,4 @@ ft_ResNet50/model_market/
 */*/__pycache__/
 model/
 images/
+ft_ResNet50/model_duke/

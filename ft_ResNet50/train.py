@@ -194,6 +194,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                     with torch.no_grad():
                         outputs = model(inputs)
                 else:
+                    print(f'inputs shape: {inputs.shape}')
                     outputs = model(inputs)
 
                 if not opt.PCB:
